@@ -32,9 +32,15 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] Vector2 wallCheckSize = new Vector2(0.05f, 0.5f); // Este ti
     [SerializeField] LayerMask wallLayer; // Este para mirar quién tiene la tag ground
 
-    [Header("GroundCheck")]
+    [Header("WallMovement")]
     [SerializeField] float wallSlideSpeed = 2f;
     [SerializeField] bool isWallSliding = false;
+
+    private bool isWallJumping;
+    private float wallJumpDirection;
+    [SerializeField] float wallJumpTime = 0.5f;
+    private float wallJumpTimer;
+    [SerializeField] Vector2 wallJumpPower = new Vector2(5f, 10f);
 
     float horizontalMovement;
     bool isFacingRight = true;
@@ -48,14 +54,20 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        rb.velocity = new Vector2(horizontalMovement * moveSpeed, rb.velocity.y);
         GroundCheck(); // Esto es terrorismo perdóname jefe
         Gravity();
-        Flip();
         ProcessWallSlide();
+        ProcessWallJump();
+
+        if (!isWallJumping) 
+        {       
+            rb.velocity = new Vector2(horizontalMovement * moveSpeed, rb.velocity.y);
+            Flip();
+        }
+
     }
 
-    public void Move(InputAction.CallbackContext context) { 
+    public void Move(InputAction.CallbackContext context) {
         horizontalMovement = context.ReadValue<Vector2>().x;
     }
 
@@ -76,8 +88,23 @@ public class PlayerMovement : MonoBehaviour
                 remainingJumps--;
             }
         }
+        
+        if (context.performed && wallJumpTimer > 0)
+        {
+            isWallJumping = true;
+            rb.velocity = new Vector2(wallJumpDirection * wallJumpPower.x, wallJumpPower.y);
+            wallJumpTimer = 0;
+
+            if(transform.localScale.x != wallJumpDirection)
+            {
+                Flip(); // Si el jugador hace wall jump pero se queda mirando a la pared le flipeamos para que no sea goofy
+            }
+
+            Invoke(nameof(CancelWallJump), wallJumpTime + 0.1f); // Me da pereza poner un IENumerator
+
+        }
     }
-    
+
     private bool WallCheck()
     {
         return Physics2D.OverlapBox(wallCheckPos.position, wallCheckSize, 0, wallLayer);
@@ -89,10 +116,32 @@ public class PlayerMovement : MonoBehaviour
         {
             isWallSliding = true;
             rb.velocity = new Vector2(rb.velocity.x, Mathf.Max(rb.velocity.y, -wallSlideSpeed));
-        } else
+        }
+        else
         {
             isWallSliding = false;
         }
+    }
+
+    private void ProcessWallJump()
+    {
+        if (isWallSliding)
+        {
+            isWallJumping = false;
+            wallJumpDirection = -transform.localScale.x;
+            wallJumpTimer = wallJumpTime;
+
+            CancelInvoke(nameof(CancelWallJump));
+        }
+        else if (wallJumpTimer > 0)
+        {
+            wallJumpTimer -= Time.deltaTime;
+        }
+    }
+
+    private void CancelWallJump()
+    {
+        isWallJumping = false;
     }
     private void Gravity()
     {
