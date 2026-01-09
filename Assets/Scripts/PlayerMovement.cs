@@ -42,6 +42,10 @@ public class PlayerMovement : MonoBehaviour
     private float wallJumpTimer;
     [SerializeField] Vector2 wallJumpPower = new Vector2(5f, 10f);
 
+    [Header("Animator")]
+    [SerializeField] Animator animator;
+
+
     float horizontalMovement;
     bool isFacingRight = true;
     // Start is called before the first frame update
@@ -63,7 +67,9 @@ public class PlayerMovement : MonoBehaviour
             rb.velocity = new Vector2(horizontalMovement * moveSpeed, rb.velocity.y);
             Flip();
         }
-
+        animator.SetFloat("yVelocity", rb.velocity.y);
+        animator.SetFloat("magnitude", rb.velocity.magnitude);
+        animator.SetBool("isWallSliding", isWallSliding);  
     }
 
     private void FixedUpdate()
@@ -80,16 +86,18 @@ public class PlayerMovement : MonoBehaviour
     {
         if (remainingJumps > 0)
         {
-
+            
             if (context.performed)
             {
                 rb.velocity = new Vector2(rb.velocity.x, jumpPower);
                 remainingJumps--;
+                animator.SetTrigger("jump");
             }
             else if (context.canceled) // Salto chiquitin
             {
                 rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y * 0.5f);
                 remainingJumps--;
+                animator.SetTrigger("jump");
             }
         }
         
@@ -98,6 +106,7 @@ public class PlayerMovement : MonoBehaviour
             isWallJumping = true;
             rb.velocity = new Vector2(wallJumpDirection * wallJumpPower.x, wallJumpPower.y);
             wallJumpTimer = 0;
+            animator.SetTrigger("jump");
 
             if(transform.localScale.x != wallJumpDirection)
             {
