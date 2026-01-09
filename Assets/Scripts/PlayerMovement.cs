@@ -55,7 +55,6 @@ public class PlayerMovement : MonoBehaviour
     void Update()
     {
         GroundCheck(); // Esto es terrorismo perdóname jefe
-        Gravity();
         ProcessWallSlide();
         ProcessWallJump();
 
@@ -65,6 +64,11 @@ public class PlayerMovement : MonoBehaviour
             Flip();
         }
 
+    }
+
+    private void FixedUpdate()
+    {
+        Gravity();
     }
 
     public void Move(InputAction.CallbackContext context) {
@@ -147,7 +151,7 @@ public class PlayerMovement : MonoBehaviour
     {
         if (rb.velocity.y < 0)
         {
-            rb.gravityScale = baseGravity * fallSpeedMultipier;
+            rb.gravityScale += fallSpeedMultipier;
             rb.velocity = new Vector2(rb.velocity.x, Mathf.Max(rb.velocity.y, -maxFallSpeed));
         }
         else
