@@ -6,10 +6,14 @@ using UnityEngine.InputSystem;
 
 public class PlayerMovement : MonoBehaviour
 {
-
-    [Header("Movement")]
     [SerializeField] Rigidbody2D rb;
+    [SerializeField] Animator animator;
+    [SerializeField] ParticleSystem dustFX;
+
+    [Header("Movement")] 
     [SerializeField] float moveSpeed = 5f;
+    float horizontalMovement;
+    bool isFacingRight = true;
 
     [Header("Jump")]
     [SerializeField] float jumpPower = 5f;
@@ -42,12 +46,7 @@ public class PlayerMovement : MonoBehaviour
     private float wallJumpTimer;
     [SerializeField] Vector2 wallJumpPower = new Vector2(5f, 10f);
 
-    [Header("Animator")]
-    [SerializeField] Animator animator;
 
-
-    float horizontalMovement;
-    bool isFacingRight = true;
     // Start is called before the first frame update
     void Start()
     {
@@ -92,12 +91,14 @@ public class PlayerMovement : MonoBehaviour
                 rb.velocity = new Vector2(rb.velocity.x, jumpPower);
                 remainingJumps--;
                 animator.SetTrigger("jump");
+                dustFX.Play();
             }
             else if (context.canceled) // Salto chiquitin
             {
                 rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y * 0.5f);
                 remainingJumps--;
                 animator.SetTrigger("jump");
+                dustFX.Play();
             }
         }
         
@@ -107,8 +108,9 @@ public class PlayerMovement : MonoBehaviour
             rb.velocity = new Vector2(wallJumpDirection * wallJumpPower.x, wallJumpPower.y);
             wallJumpTimer = 0;
             animator.SetTrigger("jump");
+            dustFX.Play();
 
-            if(transform.localScale.x != wallJumpDirection)
+            if (transform.localScale.x != wallJumpDirection)
             {
                 Flip(); // Si el jugador hace wall jump pero se queda mirando a la pared le flipeamos para que no sea goofy
             }
@@ -191,6 +193,11 @@ public class PlayerMovement : MonoBehaviour
             Vector3 ls = transform.localScale;
             ls.x *= -1f;
             transform.localScale = ls;
+
+            if (rb.velocity.y == 0) // Cuando no estamos cayendo
+            {
+                dustFX.Play();
+            }
         }
     }
 
