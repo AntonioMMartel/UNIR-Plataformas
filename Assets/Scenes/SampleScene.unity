@@ -2265,7 +2265,7 @@ GameObject:
   - component: {fileID: 1752167357}
   - component: {fileID: 1752167356}
   m_Layer: 0
-  m_Name: DustFX
+  m_Name: MovementFX
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7292,7 +7292,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rb: {fileID: 1861337027}
   animator: {fileID: 1861337033}
-  dustFX: {fileID: 1752167357}
+  movementFX: {fileID: 1752167357}
   moveSpeed: 40
   jumpPower: 90
   maxJumps: 2

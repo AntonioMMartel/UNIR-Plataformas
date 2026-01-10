@@ -8,7 +8,7 @@ public class PlayerMovement : MonoBehaviour
 {
     [SerializeField] Rigidbody2D rb;
     [SerializeField] Animator animator;
-    [SerializeField] ParticleSystem dustFX;
+    [SerializeField] ParticleSystem movementFX;
 
     [Header("Movement")] 
     [SerializeField] float moveSpeed = 5f;
@@ -91,14 +91,14 @@ public class PlayerMovement : MonoBehaviour
                 rb.velocity = new Vector2(rb.velocity.x, jumpPower);
                 remainingJumps--;
                 animator.SetTrigger("jump");
-                dustFX.Play();
+                movementFX.Play();
             }
             else if (context.canceled) // Salto chiquitin
             {
                 rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y * 0.5f);
                 remainingJumps--;
                 animator.SetTrigger("jump");
-                dustFX.Play();
+                movementFX.Play();
             }
         }
         
@@ -108,7 +108,7 @@ public class PlayerMovement : MonoBehaviour
             rb.velocity = new Vector2(wallJumpDirection * wallJumpPower.x, wallJumpPower.y);
             wallJumpTimer = 0;
             animator.SetTrigger("jump");
-            dustFX.Play();
+            movementFX.Play();
 
             if (transform.localScale.x != wallJumpDirection)
             {
@@ -196,7 +196,7 @@ public class PlayerMovement : MonoBehaviour
 
             if (rb.velocity.y == 0) // Cuando no estamos cayendo
             {
-                dustFX.Play();
+                movementFX.Play();
             }
         }
     }
