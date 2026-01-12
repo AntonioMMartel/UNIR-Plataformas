@@ -52,6 +52,8 @@ public class PlayerMovement : MonoBehaviour
     {
         remainingJumps = maxJumps;
         gameObject.GetComponent<SpriteRenderer>().enabled = true;
+        Flag.OnFlagCollect += PauseAnimations; // Suscripción a OnlyFlags
+        GameManager.LevelStarts += UnpauseAnimations; 
     }
 
     // Update is called once per frame
@@ -102,7 +104,7 @@ public class PlayerMovement : MonoBehaviour
             }
         }
         
-        if (context.performed && wallJumpTimer > 0)
+        if (context.performed && wallJumpTimer > 0 && isWallSliding)
         {
             isWallJumping = true;
             rb.velocity = new Vector2(wallJumpDirection * wallJumpPower.x, wallJumpPower.y);
@@ -199,6 +201,16 @@ public class PlayerMovement : MonoBehaviour
                 movementFX.Play();
             }
         }
+    }
+
+    private void PauseAnimations()    
+    {
+        animator.enabled = false; // Forzamos animación idle al llegar a la bandera para prevenir bug
+    }
+
+    private void UnpauseAnimations()
+    {
+        animator.enabled = true;
     }
 
     private void OnDrawGizmosSelected() // Quiero ver el groundCheck

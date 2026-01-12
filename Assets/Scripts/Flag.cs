@@ -9,6 +9,5 @@ public class Flag : MonoBehaviour, IItem
     public void Collect()
     {
         OnFlagCollect.Invoke();
-        Destroy(gameObject);
     }
 }

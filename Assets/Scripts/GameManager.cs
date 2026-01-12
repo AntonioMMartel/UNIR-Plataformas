@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Net.Sockets;
@@ -18,6 +19,8 @@ public class GameManager : MonoBehaviour
 
     private bool waitingForPlayerInput = false;
 
+    public static event Action LevelStarts;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -34,10 +37,7 @@ public class GameManager : MonoBehaviour
         UI.SetActive(false);
         nextLevelCanvas.SetActive(true);
         Time.timeScale = 0f;
-
         waitingForPlayerInput = true;
-
-
     }
 
     void IncreaseScore(int points)
@@ -57,6 +57,8 @@ public class GameManager : MonoBehaviour
                 waitingForPlayerInput = false;
                 nextLevelCanvas.SetActive(false);
                 Time.timeScale = 1f;
+
+                LevelStarts.Invoke();
             }
         }
     }
