@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Parallax : MonoBehaviour
 {
-    [SerializeField] float parallaxFactor = 0.5f;
+    [SerializeField] Vector2 parallaxFactor = new Vector2(0.5f, 0.5f);
 
     private Transform camera;
     private Vector3 lastCameraPos;
@@ -25,14 +25,8 @@ public class Parallax : MonoBehaviour
     {
         Vector3 delta = camera.position - lastCameraPos;
 
-        transform.position += new Vector3(delta.x * parallaxFactor, 0f, 0f);
+        transform.position += new Vector3(delta.x * parallaxFactor.x, delta.y * parallaxFactor.y, 0f);
         lastCameraPos = camera.position;
 
-        // Tiling
-        if (Mathf.Abs(camera.position.x - transform.position.x) >= textureUnitSizeX)
-        {
-            float offset = (camera.position.x - transform.position.x) % textureUnitSizeX;
-            transform.position = new Vector3(camera.position.x + offset, transform.position.y, transform.position.z);
-        }
     }
 }
