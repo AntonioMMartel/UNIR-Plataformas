@@ -104,7 +104,7 @@ public class PlayerMovement : MonoBehaviour
             }
         }
         
-        if (context.performed && wallJumpTimer > 0)
+        if (context.performed && wallJumpTimer > 0 && WallCheck())
         {
             isWallJumping = true;
             rb.velocity = new Vector2(wallJumpDirection * wallJumpPower.x, wallJumpPower.y);
