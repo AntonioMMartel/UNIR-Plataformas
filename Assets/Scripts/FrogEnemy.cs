@@ -18,6 +18,8 @@ public class FrogEnemy : MonoBehaviour
     [SerializeField] float jumpTimer;
     private float currentJumpTime;
 
+    private bool isFacingRight = false;
+
     private Rigidbody2D rb;
     private bool isGrounded;
     private bool shouldJump;
@@ -71,11 +73,21 @@ public class FrogEnemy : MonoBehaviour
 
             Vector2 direction = player.position - transform.position;
 
+            // Flip towards player
+            if (isFacingRight && direction.x < 0 || !isFacingRight && direction.x > 0)
+            {
+                isFacingRight = !isFacingRight;
+                Vector3 ls = transform.localScale;
+                ls.x *= -1f;
+                transform.localScale = ls;
+            }
+
             if (-detectionRange > direction.magnitude || direction.magnitude < detectionRange)
             {
                 if (direction.x >= 0)
                 {
                     rb.AddForce(new Vector2(horizontalSpeed, jumpForce), ForceMode2D.Impulse);
+
                 }
                 else
                 {
@@ -84,4 +96,6 @@ public class FrogEnemy : MonoBehaviour
             }
         }   
     }
+
+
 }
