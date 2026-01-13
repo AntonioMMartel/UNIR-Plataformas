@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FrogEnemy : MonoBehaviour
+public class FrogEnemy : MonoBehaviour, IEnemy
 {
     [SerializeField] Transform player;
     [SerializeField] float horizontalSpeed = 2f;
