@@ -73,4 +73,11 @@ public class GameManager : MonoBehaviour
             }
         }
     }
+
+    private void OnDisable()
+    {
+        Coin.OnCoinCollect -= IncreaseScore;
+        Flag.OnFlagCollect -= LoadNextLevel;
+        PlayerHP.OnPlayerLose -= GameOver;
+    }
 }

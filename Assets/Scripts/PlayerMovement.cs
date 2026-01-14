@@ -22,8 +22,8 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("GroundCheck")]
     [SerializeField] Transform groundCheckPos;
-    [SerializeField] Vector2 groundCheckSize = new Vector2(0.5f, 0.05f); // Este ti
-    [SerializeField] LayerMask groundLayer; // Este para mirar quién tiene la tag ground
+    [SerializeField] Vector2 groundCheckSize = new Vector2(0.5f, 0.05f); // Hitbox suelo
+    [SerializeField] LayerMask groundLayer;
     private bool isGrounded = false;
 
     [Header("Gravity")]
@@ -33,19 +33,18 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("WallCheck")]
     [SerializeField] Transform wallCheckPos;
-    [SerializeField] Vector2 wallCheckSize = new Vector2(0.05f, 0.5f); // Este ti
-    [SerializeField] LayerMask wallLayer; // Este para mirar quién tiene la tag ground
+    [SerializeField] Vector2 wallCheckSize = new Vector2(0.05f, 0.5f); // Hitbox pared
+    [SerializeField] LayerMask wallLayer; 
 
     [Header("WallMovement")]
     [SerializeField] float wallSlideSpeed = 2f;
-    [SerializeField] bool isWallSliding = false;
-
+    [SerializeField] float wallJumpTime = 0.5f;
+    [SerializeField] Vector2 wallJumpPower = new Vector2(5f, 10f);
+    private bool isWallSliding = false;
     private bool isWallJumping;
     private float wallJumpDirection;
-    [SerializeField] float wallJumpTime = 0.5f;
     private float wallJumpTimer;
-    [SerializeField] Vector2 wallJumpPower = new Vector2(5f, 10f);
-
+    
 
     // Start is called before the first frame update
     void Start()
@@ -54,6 +53,12 @@ public class PlayerMovement : MonoBehaviour
         gameObject.GetComponent<SpriteRenderer>().enabled = true;
         Flag.OnFlagCollect += PauseAnimations; // Suscripción a OnlyFlags
         GameManager.LevelStarts += UnpauseAnimations; 
+    }
+
+    private void OnDisable()
+    {
+        Flag.OnFlagCollect -= PauseAnimations; // Suscripción a OnlyFlags
+        GameManager.LevelStarts -= UnpauseAnimations;
     }
 
     // Update is called once per frame
@@ -117,7 +122,7 @@ public class PlayerMovement : MonoBehaviour
                 Flip(); // Si el jugador hace wall jump pero se queda mirando a la pared le flipeamos para que no sea goofy
             }
 
-            Invoke(nameof(CancelWallJump), wallJumpTime + 0.1f); // Me da pereza poner un IENumerator
+            Invoke(nameof(CancelWallJump), wallJumpTime + 0.1f); 
 
         }
     }
