@@ -15,6 +15,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] List<GameObject> levels;
     private int currentLevel = 0;
     [SerializeField] GameObject nextLevelCanvas;
+    [SerializeField] GameObject gameOverCanvas;
     [SerializeField] GameObject UI;
 
     private bool waitingForPlayerInput = false;
@@ -28,6 +29,7 @@ public class GameManager : MonoBehaviour
         scoreText.text = "0";
         Coin.OnCoinCollect += IncreaseScore; // Suscripción a CoinHub
         Flag.OnFlagCollect += LoadNextLevel; // Suscripción a OnlyFlags
+        PlayerHP.OnPlayerLose += GameOver;
         nextLevelCanvas.SetActive(false);
         UI.SetActive(true);
     }
@@ -40,6 +42,15 @@ public class GameManager : MonoBehaviour
         waitingForPlayerInput = true;
     }
 
+    void GameOver()
+    {
+        UI.SetActive(false);
+        gameOverCanvas.SetActive(true);
+        Time.timeScale = 0f;
+        waitingForPlayerInput = true;
+    }
+
+
     void IncreaseScore(int points)
     {
         score += points;
@@ -51,14 +62,14 @@ public class GameManager : MonoBehaviour
     {
         if (waitingForPlayerInput)
         {
-            if (Input.anyKeyDown) // Me da pereza poderosa hacerlo con el InputSystem (lo siento jefe!)
+            if (Input.anyKeyDown)             
             {
-                //SceneManager.LoadScene(SceneManager.GetActiveScene().name);
                 waitingForPlayerInput = false;
                 nextLevelCanvas.SetActive(false);
+                gameOverCanvas.SetActive(false);
                 Time.timeScale = 1f;
-
                 LevelStarts.Invoke();
+                SceneManager.LoadScene(SceneManager.GetActiveScene().name);
             }
         }
     }

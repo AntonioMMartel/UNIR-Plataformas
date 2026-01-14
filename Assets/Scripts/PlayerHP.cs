@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -13,6 +14,8 @@ public class PlayerHP : MonoBehaviour
 
     [SerializeField] float invincibilityFrame = 1f;
     private float invincibilityTimer = 0f;
+
+    public static event Action OnPlayerLose;
     // Start is called before the first frame update
     void Start()
     {
@@ -39,9 +42,9 @@ public class PlayerHP : MonoBehaviour
         currentHP--;
         healthUI.UpdateHearts(currentHP);
         StartCoroutine(PlayerSpritePulse());
-        if (currentHP < 0)
+        if (currentHP <= 0)
         {
-            // game over
+            OnPlayerLose.Invoke();
         }
     }
 
